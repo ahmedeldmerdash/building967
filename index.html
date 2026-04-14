@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>إتحاد ملاك عمارة 967</title>
+    <style>
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #f0f2f5; margin: 0; padding: 20px; }
+        .container { max-width: 600px; margin: auto; background: #fff; padding: 25px; border-radius: 15px; box-shadow: 0 10px 25px rgba(0,0,0,0.1); }
+        h1 { text-align: center; color: #1a73e8; font-size: 22px; margin-bottom: 10px; }
+        p.subtitle { text-align: center; color: #5f6368; margin-bottom: 25px; font-size: 14px; }
+        .form-group { margin-bottom: 18px; }
+        label { display: block; margin-bottom: 8px; font-weight: 600; color: #3c4043; }
+        input, select, textarea {
+            width: 100%; padding: 12px; border: 1px solid #dadce0; border-radius: 8px; box-sizing: border-box; font-size: 15px; outline: none;
+        }
+        input:focus, select:focus { border-color: #1a73e8; box-shadow: 0 0 0 2px rgba(26,115,232,0.2); }
+        button {
+            width: 100%; padding: 14px; background-color: #1a73e8; color: white; border: none; border-radius: 8px;
+            font-size: 16px; font-weight: bold; cursor: pointer; transition: 0.3s;
+        }
+        button:hover { background-color: #1557b0; }
+        button:disabled { background-color: #ccc; cursor: not-allowed; }
+        .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>صفحة إتحاد الملاك - عمارة 967</h1>
+    <p class="subtitle">قطاع أ - مشروع غرب المطار</p>
+
+    <form id="ownerForm">
+        <div class="grid">
+            <div class="form-group">
+                <label>رقم الشقة</label>
+                <select name="apartment_number" required id="apt_num">
+                    <option value="">اختر...</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label>رقم الدور</label>
+                <input type="text" name="floor_number" placeholder="مثال: الأرضي" required>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label>إسم المالك</label>
+            <input type="text" name="owner_name" placeholder="الاسم الكامل" required>
+        </div>
+
+        <div class="form-group">
+            <label>اللقب أو الكنية</label>
+            <input type="text" name="nickname" placeholder="اللقب العائلي">
+        </div>
+
+        <div class="grid">
+            <div class="form-group">
+                <label>رقم هاتف 1</label>
+                <input type="tel" name="phone1" placeholder="01xxxxxxxxx" required>
+            </div>
+            <div class="form-group">
+                <label>رقم هاتف 2</label>
+                <input type="tel" name="phone2" placeholder="اختياري">
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label>أنشطة وملاحظات</label>
+            <textarea name="notes" rows="3"></textarea>
+        </div>
+
+        <button type="submit" id="submitBtn">حفظ البيانات</button>
+    </form>
+</div>
+
+<script>
+    // توليد أرقام الشقق من 1 إلى 24
+    const select = document.getElementById('apt_num');
+    for(let i=1; i<=24; i++) {
+        let opt = document.createElement('option');
+        opt.value = i;
+        opt.innerHTML = 'شقة ' + i;
+        select.appendChild(opt);
+    }
+
+    // الربط مع Google Sheets
+    const scriptURL = 'https://script.google.com/macros/s/AKfycbyaWX_uU8y6D-9E-f3pymfJKik7bZpSRWgc5ikTbkHaejrq0NA0Tdr7qnyB1axZfxu93A/exec'; 
+    const form = document.getElementById('ownerForm');
+    const btn = document.getElementById('submitBtn');
+
+    form.addEventListener('submit', e => {
+        e.preventDefault();
+        btn.disabled = true;
+        btn.innerText = "جاري الحفظ...";
+
+        fetch(scriptURL, { method: 'POST', body: new FormData(form)})
+            .then(response => {
+                alert("تم حفظ بياناتك بنجاح في سجلات العمارة!");
+                btn.disabled = false;
+                btn.innerText = "حفظ البيانات";
+                form.reset();
+            })
+            .catch(error => {
+                alert("عذراً، حدث خطأ. تأكد من اتصال الإنترنت.");
+                btn.disabled = false;
+                btn.innerText = "حفظ البيانات";
+            });
+    });
+</script>
+
+</body>
+</html>
